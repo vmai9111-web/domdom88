@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Domdom88 Skibidi</title>
+
+<style>
+body{
+    margin:0;
+    background:radial-gradient(circle,#0f6b4f,#021b14);
+    font-family:Arial;
+    color:#ffd700;
+}
+.container{
+    display:grid;
+    grid-template-columns:240px 1fr 240px;
+    height:100vh;
+}
+
+/* RESET BUTTON */
+.reset-btn{
+    position:fixed;
+    left:-22px;
+    bottom:40%;
+    width:44px;
+    height:44px;
+    background:linear-gradient(#ff5252,#b71c1c);
+    color:#fff;
+    border:none;
+    border-radius:0 10px 10px 0;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 0 14px #ff5252;
+    z-index:999;
+    transition:.3s;
+}
+.reset-btn:hover{left:0}
+.reset-hidden{display:none}
+
+/* SIDE */
+.side{
+    padding:16px;
+    background:rgba(0,0,0,.45);
+    box-shadow:inset 0 0 25px #000,0 0 20px gold;
+}
+.side h3{text-align:center;text-shadow:0 0 12px gold}
+.side p{font-size:14px;line-height:1.6}
+
+/* CENTER */
+.main{display:flex;justify-content:center;align-items:center}
+.box{
+    width:600px;
+    background:#062d1c;
+    border-radius:26px;
+    padding:22px;
+    box-shadow:0 0 50px gold;
+}
+.hidden{display:none}
+
+h1{text-align:center;text-shadow:0 0 20px gold}
+.subtitle,.credit{text-align:center;font-size:14px;opacity:.9}
+
+/* INPUT */
+input,select,button{
+    width:100%;
+    padding:10px;
+    margin:6px 0;
+    border-radius:6px;
+    border:none;
+    font-size:15px;
+}
+button{cursor:pointer;font-weight:bold;background:linear-gradient(#ffd700,#c9a400)}
+
+/* MONEY */
+.money{
+    text-align:center;
+    font-size:36px;
+    margin:12px 0;
+    text-shadow:0 0 30px #ffeb3b;
+}
+
+/* BET */
+.bet-suggest{display:flex;gap:8px}
+.bet-suggest button{background:#1a6b4f;color:#fff}
+
+/* TÀI XỈU */
+.choice{display:flex;gap:12px;margin:8px 0}
+.choice button{flex:1;font-size:20px;padding:14px}
+.tai{background:linear-gradient(#ff5252,#b71c1c);color:#fff}
+.xiu{background:linear-gradient(#4caf50,#1b5e20);color:#fff}
+.active{transform:scale(1.08);box-shadow:0 0 30px #fff}
+
+/* TOTAL */
+.total-wrap{display:flex;justify-content:center;margin:12px 0}
+.total{
+    width:130px;height:130px;border-radius:50%;
+    background:radial-gradient(#fff,#ffd700);
+    color:#000;font-size:40px;font-weight:bold;
+    display:flex;align-items:center;justify-content:center;
+}
+
+/* SLOT */
+.slots{display:flex;justify-content:center;gap:24px;margin:14px 0}
+.slot{
+    width:90px;height:110px;background:#111;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:38px;color:#fff;
+}
+.spin{animation:spin 1s linear}
+@keyframes spin{0%{transform:translateY(-40px)}100%{transform:translateY(40px)}}
+
+/* RESULT */
+.result{text-align:center;font-size:30px;margin-top:10px}
+.win{color:#00ff7f;text-shadow:0 0 20px #00ff7f}
+.lose{color:#ff5252;text-shadow:0 0 20px #ff5252}
+.detail{text-align:center;font-size:16px;margin-top:6px}
+
+/* WARNING */
+.warning{
+    text-align:center;
+    margin-top:8px;
+    color:#ff9800;
+    font-size:18px;
+    font-weight:bold;
+    text-shadow:0 0 12px #ff9800;
+    animation:pulse 1s infinite alternate;
+}
+@keyframes pulse{from{opacity:.6}to{opacity:1}}
+
+.gameover{text-align:center;color:#ff5252}
+</style>
+</head>
+
+<body>
+
+<button id="resetBtn" class="reset-btn reset-hidden" onclick="confirmReset()">⟳</button>
+
+<div class="container">
+
+<div class="side">
+<h3>LUẬT CHƠI</h3>
+<p>🎰 3 vòng quay (1–6)</p>
+<p>🎲 Tổng ≥ 11 → <b>TÀI</b></p>
+<p>🎲 Tổng ≤ 10 → <b>XỈU</b></p>
+<p>⚠️ Nợ 8 triệu → cảnh báo</p>
+<p>❌ Nợ 10 triệu → trục xuất</p>
+</div>
+
+<div class="main">
+<div class="box">
+
+<div id="login">
+<h1>WELCOME TO DOMDOM88.SKIBIDI</h1>
+<div class="subtitle">(giả lập tài xỉu)</div>
+<input id="username" placeholder="Tên con bạc">
+<select id="level">
+<option value="">Chọn độ khó</option>
+<script>
+for(let i=1;i<=10;i++)
+document.write(`<option value="${i}">${i} (${110-i*10}%)</option>`);
+</script>
+</select>
+<button onclick="start()">VÀO GAME</button>
+<div class="credit">cre: maisg</div>
+</div>
+
+<div id="admin" class="hidden">
+<h1>HELLO ADMIN 👑</h1>
+<button onclick="enterGame()">TIẾP TỤC</button>
+</div>
+
+<div id="game" class="hidden">
+<h1>🎰 TÀI XỈU 🎰</h1>
+<div class="money">💰 <span id="money">500000</span></div>
+
+<div class="bet-suggest">
+<button onclick="bet.value=100000">100K</button>
+<button onclick="bet.value=200000">200K</button>
+<button onclick="bet.value=500000">500K</button>
+<button onclick="bet.value=1000000">1M</button>
+</div>
+
+<input id="bet" placeholder="Tiền cược">
+
+<div class="choice">
+<button class="tai" onclick="choose('tai')">TÀI</button>
+<button class="xiu" onclick="choose('xiu')">XỈU</button>
+</div>
+
+<button onclick="play()">QUAY</button>
+
+<div class="total-wrap"><div class="total" id="total">?</div></div>
+
+<div class="slots">
+<div class="slot" id="s1">?</div>
+<div class="slot" id="s2">?</div>
+<div class="slot" id="s3">?</div>
+</div>
+
+<div id="result" class="result"></div>
+<div id="detail" class="detail"></div>
+<div id="warning" class="warning hidden"></div>
+</div>
+
+<div id="gameover" class="hidden gameover">
+<h1>GAME OVER</h1>
+<p>BỊ TRỤC XUẤT KHỎI CASINO</p>
+</div>
+
+</div>
+</div>
+
+<div class="side">
+<h3>TRẠNG THÁI</h3>
+<p>User: <span id="u">-</span></p>
+<p>Độ khó: <span id="l">-</span></p>
+<p>Mode: <span id="m">NORMAL</span></p>
+</div>
+
+</div>
+
+<script>
+let money=500000,choice="",level=0,isAdmin=false,warned=false;
+const resetBtn=document.getElementById("resetBtn");
+const warning=document.getElementById("warning");
+
+function showReset(s){resetBtn.classList.toggle("reset-hidden",!s)}
+
+function confirmReset(){
+    if(confirm("Bạn có chắc muốn RESET và quay lại từ đầu không?")){
+        resetGame();
+    }
+}
+
+function resetGame(){
+    money=500000;choice="";level=0;isAdmin=false;warned=false;
+    username.value="";document.getElementById("level").value="";
+    moneyEl.innerText="500000";
+    total.innerText="?";
+    s1.innerText=s2.innerText=s3.innerText="?";
+    result.innerText=detail.innerText="";
+    warning.classList.add("hidden");
+    u.innerText=l.innerText="-";m.innerText="NORMAL";
+    showReset(false);
+    login.classList.remove("hidden");
+    admin.classList.add("hidden");
+    game.classList.add("hidden");
+    gameover.classList.add("hidden");
+}
+
+function start(){
+    const user=username.value||"guest";
+    level=+document.getElementById("level").value;
+    if(!level)return alert("Chọn độ khó");
+    u.innerText=user;l.innerText=level;
+    login.classList.add("hidden");
+    showReset(true);
+    if(user==="maibell123"){isAdmin=true;m.innerText="ADMIN";admin.classList.remove("hidden")}
+    else enterGame();
+}
+function enterGame(){admin.classList.add("hidden");game.classList.remove("hidden")}
+function choose(c){
+    choice=c;
+    document.querySelectorAll(".choice button").forEach(b=>b.classList.remove("active"));
+    document.querySelector("."+c).classList.add("active");
+}
+function r(){return Math.floor(Math.random()*6)+1}
+function play(){
+    if(!bet.value||!choice)return;
+    [s1,s2,s3].forEach(s=>s.classList.add("spin"));
+    setTimeout(()=>{
+        let a=r(),b=r(),c=r(),sum=a+b+c;
+        let final=isAdmin?choice:(sum>=11?"tai":"xiu");
+        [s1,s2,s3].forEach(s=>s.classList.remove("spin"));
+        s1.innerText=a;s2.innerText=b;s3.innerText=c;
+        total.innerText=sum;
+        let change=+bet.value;
+        if(choice===final){
+            money+=change;
+            result.innerText="THẮNG +" + change.toLocaleString();
+            result.className="result win";
+        }else{
+            money-=change;
+            result.innerText="THUA -" + change.toLocaleString();
+            result.className="result lose";
+        }
+        detail.innerText=`Kết quả: ${a} - ${b} - ${c} | Tổng = ${sum}`;
+        moneyEl.innerText=money.toLocaleString();
+
+        if(money<=-8000000 && !warned){
+            warning.innerText="⚠️ CẢNH BÁO: BẠN ĐANG NỢ GẦN 8 TRIỆU!";
+            warning.classList.remove("hidden");
+            warned=true;
+        }
+
+        if(money<-10000000){
+            game.classList.add("hidden");
+            gameover.classList.remove("hidden");
+        }
+
+        bet.value="";choice="";
+        document.querySelectorAll(".choice button").forEach(b=>b.classList.remove("active"));
+    },1000);
+}
+const moneyEl=document.getElementById("money");
+</script>
+
+</body>
+</html>
